@@ -4,11 +4,12 @@ public class User
 {
     public User() { }
 
-    public int UserId { get; private set; }
-    public string FirstName { get; private set; } = string.Empty;
-    public string LastName { get; private set; } = string.Empty;
-    public string UserName { get; private set; } = string.Empty;
-    public string PasswordHash { get; private set; } = string.Empty;
+    public int UserId { get; set; }
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string UserName { get; set; } = string.Empty;
+    public string PasswordHash { get; set; } = string.Empty;
+    public string PasswordSalt { get; set; } = string.Empty;     // password salting 1.2
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     public Student? Student { get; set; }
     public Professor? Professor { get; set; }
