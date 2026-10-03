@@ -57,5 +57,18 @@ public class UserController : ControllerBase
             return NotFound();
 
         return Ok();
+
+    }
+    [HttpPost("login")]                 //creating login method in controller
+    public IActionResult Login(LoginDto loginDto)
+    {
+        var result = _userService.Login(
+            loginDto.UserName,
+            loginDto.Password);
+
+        if (!result)
+            return Unauthorized("Username or password is incorrect.");
+
+        return Ok("Login successful.");
     }
 }

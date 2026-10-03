@@ -43,6 +43,7 @@ public class UserService
 
         return isPasswordCorrect;
     }
+
     private bool VerifyPassword( string password, string salt,string storedHash)   // 2.1 new method password verifying
     {
         var hash = HashPassword(password, salt);
