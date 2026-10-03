@@ -1,2 +1,8 @@
-.vs/ 
-**/bin/ 
+.vs/
+**/bin/
+**/obj/
+*.user
+*.suo
+*.rsuser
+.vscode/
+*.log
