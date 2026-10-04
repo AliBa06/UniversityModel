@@ -2,11 +2,12 @@
 using UniversityModel.Domain.Entities;
 using UniversityModel.Dtos;
 using UniversityModel.Service;
-
+using Microsoft.AspNetCore.Authorization;
 namespace UniversityModel.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class UserController : ControllerBase
 {
     private readonly UserService _userService;
@@ -39,6 +40,7 @@ public class UserController : ControllerBase
 
                                                                                          // POST: api/User
     [HttpPost]
+    [AllowAnonymous]
     public IActionResult Create(UserDto user)
     {
 
