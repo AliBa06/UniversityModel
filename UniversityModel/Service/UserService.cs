@@ -8,15 +8,19 @@ using System.Runtime.Intrinsics.Arm;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
 using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 namespace UniversityModel.Service;
 
 public class UserService
 {
 
-    private readonly MemoryDataStore _dataStore;                
-    public UserService(MemoryDataStore dataStore)
+    private readonly MemoryDataStore _dataStore;
+    private readonly IConfiguration _configuration;          //4.3 adding a new field 
+    public UserService(MemoryDataStore dataStore , IConfiguration configuration)   //4.4 giving Iconfiguration to Userservice
     {
         _dataStore = dataStore;
+        _configuration = configuration;
     }
 
     public List<User> GetAll()
@@ -28,20 +32,57 @@ public class UserService
         return _dataStore.Users
             .FirstOrDefault(x => x.UserId == id);
     }
-    public bool Login(string userName, string password)     //3.1 new method login
+    public string Login(string userName, string password)     //3.1 new method login
     {
         var user = _dataStore.Users
             .FirstOrDefault(x => x.UserName == userName);            //finding user in userlists
 
         if (user is null)
-            return false;
+            throw new Exception("اطلاعات وارد شده صحیح نیست");
 
         var isPasswordCorrect = VerifyPassword(
             password,
             user.PasswordSalt,
             user.PasswordHash);
 
-        return isPasswordCorrect;
+
+        if (isPasswordCorrect ==false)
+            throw new Exception("اطلاعات وارد شده صحیح نیست");
+
+        return GenerateToken(user);
+    }
+
+    private string GenerateToken(User user)                                                //4.5  this method needs user to build token and will return this as string
+    {
+        var claims = new[]                                                                // claim is the informations that we put in token now make a bunch of claims
+        {
+        new Claim(ClaimTypes.NameIdentifier,user.UserId.ToString()),                         // the first class is about naem identifier if userid is 15 nameidentifier will be 15 so save name identifier in this token
+          
+
+        new Claim(ClaimTypes.Name,user.UserName)
+            
+                                                                                                                //so we save userid and name
+    };
+
+        var key = new SymmetricSecurityKey(                                                                        // after changing the jwt key to bytes change it to a securitykey
+            Encoding.UTF8.GetBytes( _configuration["Jwt:Key"]!));                                                        // ! we are sure that key is not null
+               
+
+        var credentials = new SigningCredentials( key,SecurityAlgorithms.HmacSha256);                                            // sign the key with algorithm hmacsha
+           
+            
+
+        var token = new JwtSecurityToken(                                                                                     //build a jwt
+            issuer: _configuration["Jwt:Issuer"],
+            audience: _configuration["Jwt:Audience"],
+            claims: claims,                                                                                              // put the claims in jwt
+            expires: DateTime.UtcNow.AddMinutes(double.Parse( _configuration["Jwt:ExpireMinutes"]!)),                 // expires utc + expireminute
+            signingCredentials: credentials);                                                                               // sign with the same algorithm we used for key
+                   
+            
+
+        return new JwtSecurityTokenHandler()
+            .WriteToken(token);                                                                                                 //we transfer the jwt object that we wrote in to jwt string
     }
 
     private bool VerifyPassword( string password, string salt,string storedHash)   // 2.1 new method password verifying

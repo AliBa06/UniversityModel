@@ -66,9 +66,9 @@ public class UserController : ControllerBase
             loginDto.UserName,
             loginDto.Password);
 
-        if (!result)
-            return Unauthorized("Username or password is incorrect.");
+        
+          
 
-        return Ok("Login successful.");
+        return Ok (result);
     }
 }
