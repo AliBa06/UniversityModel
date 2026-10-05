@@ -32,6 +32,22 @@ public class UserService
         return _dataStore.Users
             .FirstOrDefault(x => x.UserId == id);
     }
+    private string? GetUserRole(int userId)                           // a method named getuserrole , we give it an userid 
+    {
+        var userRole = _dataStore.UserRoles                                 // search the whole userrole list
+            .FirstOrDefault(x => x.UserId == userId);                       // 
+
+        if (userRole is null)
+            return null;
+
+        var role = _dataStore.Roles
+            .FirstOrDefault(x => x.RoleId == userRole.RoleId);
+
+        if (role is null)
+            return null;
+
+        return role.RoleName;                 //now that you find the roleid find the role
+    }
     public string Login(string userName, string password)     //3.1 new method login
     {
         var user = _dataStore.Users
@@ -54,11 +70,15 @@ public class UserService
 
     private string GenerateToken(User user)                                                //4.5  this method needs user to build token and will return this as string
     {
+        var role = GetUserRole(user.UserId);
+
         var claims = new[]                                                                // claim is the informations that we put in token now make a bunch of claims
         {
         new Claim(ClaimTypes.NameIdentifier,user.UserId.ToString()),                         // the first class is about naem identifier if userid is 15 nameidentifier will be 15 so save name identifier in this token
           
-
+        new Claim(ClaimTypes.Role,role ?? ""),
+    
+    
         new Claim(ClaimTypes.Name,user.UserName)
             
                                                                                                                 //so we save userid and name
@@ -112,10 +132,13 @@ public class UserService
     {
 
 
-        var newUser = new User();
-        newUser.UserName = user.UserName;
-        newUser.FirstName = user.FirstName;
-        newUser.LastName = user.LastName;
+        var newUser = new User
+        {
+            UserId = _dataStore.Users.Count + 1,
+            UserName = user.UserName,
+            FirstName = user.FirstName,
+            LastName = user.LastName
+        };
 
         var usernameExists = _dataStore.Users   // TODO: check username is not exist in db & we have to use _dataStore exept Context beacuse we are using _datastore in memory datastore
             .Any(x => x.UserName == user.UserName);

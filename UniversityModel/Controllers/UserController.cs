@@ -50,7 +50,7 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("{id}")]                                                                        // DELETE: api/User/5
-                                                                                                    
+    [Authorize(Roles = "Admin")]                                                                                                
     public IActionResult Delete(int id)
     {
         var deleted = _userService.Delete(id);
@@ -61,7 +61,8 @@ public class UserController : ControllerBase
         return Ok();
 
     }
-    [HttpPost("login")]                 //creating login method in controller
+    [HttpPost("login")]
+    [AllowAnonymous]//creating login method in controller
     public IActionResult Login(LoginDto loginDto)
     {
         var result = _userService.Login(

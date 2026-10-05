@@ -41,7 +41,7 @@ builder.Services
     .AddJwtBearer(options =>
     {
         var jwtKey = builder.Configuration["Jwt:Key"]
-            ?? throw new InvalidOperationException("JWT Key is not configured.");
+            ?? throw new InvalidOperationException("JWT Key is not configured.");     //invalidoperationexeption:your code is true but for now your task can not be done
 
         options.TokenValidationParameters = new TokenValidationParameters
         {
