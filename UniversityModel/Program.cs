@@ -30,6 +30,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddSingleton<MemoryDataStore>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<RoleRequestService>();
 
 builder.Services.AddDbContext<UniversityDbContext>(options =>
     options.UseSqlServer(

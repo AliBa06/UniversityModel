@@ -4,7 +4,7 @@ using UniversityModel.Dtos;
 using UniversityModel.Service;
 using Microsoft.AspNetCore.Authorization;
 namespace UniversityModel.Controllers;
-
+using System.Security.Claims;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]

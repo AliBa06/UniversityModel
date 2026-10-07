@@ -32,21 +32,17 @@ public class UserService
         return _dataStore.Users
             .FirstOrDefault(x => x.UserId == id);
     }
-    private string? GetUserRole(int userId)                           // a method named getuserrole , we give it an userid 
+    private List<string> GetUserRoles(int userId)
     {
-        var userRole = _dataStore.UserRoles                                 // search the whole userrole list
-            .FirstOrDefault(x => x.UserId == userId);                       // 
-
-        if (userRole is null)
-            return null;
-
-        var role = _dataStore.Roles
-            .FirstOrDefault(x => x.RoleId == userRole.RoleId);
-
-        if (role is null)
-            return null;
-
-        return role.RoleName;                 //now that you find the roleid find the role
+        return _dataStore.UserRoles
+            .Where(x => x.UserId == userId)
+            .Join(
+                _dataStore.Roles,
+                userRole => userRole.RoleId,
+                role => role.RoleId,
+                (userRole, role) => role.RoleName
+            )
+            .ToList();
     }
     public string Login(string userName, string password)     //3.1 new method login
     {
@@ -68,41 +64,48 @@ public class UserService
         return GenerateToken(user);
     }
 
-    private string GenerateToken(User user)                                                //4.5  this method needs user to build token and will return this as string
+    private string GenerateToken(User user)
     {
-        var role = GetUserRole(user.UserId);
+        var roles = GetUserRoles(user.UserId);
 
-        var claims = new[]                                                                // claim is the informations that we put in token now make a bunch of claims
-        {
-        new Claim(ClaimTypes.NameIdentifier,user.UserId.ToString()),                         // the first class is about naem identifier if userid is 15 nameidentifier will be 15 so save name identifier in this token
-          
-        new Claim(ClaimTypes.Role,role ?? ""),
-    
-    
-        new Claim(ClaimTypes.Name,user.UserName)
-            
-                                                                                                                //so we save userid and name
+        var claims = new List<Claim>
+    {
+        new Claim(
+            ClaimTypes.NameIdentifier,
+            user.UserId.ToString()),
+
+        new Claim(
+            ClaimTypes.Name,
+            user.UserName)
     };
 
-        var key = new SymmetricSecurityKey(                                                                        // after changing the jwt key to bytes change it to a securitykey
-            Encoding.UTF8.GetBytes( _configuration["Jwt:Key"]!));                                                        // ! we are sure that key is not null
-               
+        foreach (var role in roles)
+        {
+            claims.Add(
+                new Claim(
+                    ClaimTypes.Role,
+                    role));
+        }
 
-        var credentials = new SigningCredentials( key,SecurityAlgorithms.HmacSha256);                                            // sign the key with algorithm hmacsha
-           
-            
+        var key = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(
+                _configuration["Jwt:Key"]!));
 
-        var token = new JwtSecurityToken(                                                                                     //build a jwt
+        var credentials = new SigningCredentials(
+            key,
+            SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
             issuer: _configuration["Jwt:Issuer"],
             audience: _configuration["Jwt:Audience"],
-            claims: claims,                                                                                              // put the claims in jwt
-            expires: DateTime.UtcNow.AddMinutes(double.Parse( _configuration["Jwt:ExpireMinutes"]!)),                 // expires utc + expireminute
-            signingCredentials: credentials);                                                                               // sign with the same algorithm we used for key
-                   
-            
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(
+                double.Parse(
+                    _configuration["Jwt:ExpireMinutes"]!)),
+            signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler()
-            .WriteToken(token);                                                                                                 //we transfer the jwt object that we wrote in to jwt string
+            .WriteToken(token);
     }
 
     private bool VerifyPassword( string password, string salt,string storedHash)   // 2.1 new method password verifying
@@ -145,7 +148,7 @@ public class UserService
 
         if (usernameExists)
         {
-            throw new Exception("Username already exists");
+            throw new Exception("کاربری با این اطلاعات قبلا ایجاد شده است.");
         }
         if (user == null)
         {
@@ -183,3 +186,4 @@ public class UserService
         return true;
     }
 }
+   
