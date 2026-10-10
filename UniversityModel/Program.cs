@@ -7,6 +7,8 @@ using Microsoft.OpenApi;
 using UniversityModel.Service;
 using System.Text;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<EnrollmentService>();
+builder.Services.AddScoped<CourseOfferingService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
