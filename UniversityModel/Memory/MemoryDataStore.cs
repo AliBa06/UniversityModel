@@ -9,14 +9,12 @@ public class MemoryDataStore
     public List<Role> Roles { get; } = new();
     public List<UserRole> UserRoles { get; } = new();
     public List<RoleRequest> RoleRequests { get; } = new();
-
     public List<Course> Courses { get; } = new();
     public List<CourseOffering> CourseOfferings { get; } = new();
     public List<Enrollment> Enrollments { get; } = new();
     public List<Student> Students { get; } = new();
     public List<Professor> Professors { get; } = new();
     public List<Semester> Semesters { get; } = new();
-
     public List<FieldOfStudy> FieldsOfStudy { get; } = new();
     public List<CourseField> CourseFields { get; } = new();
 
@@ -114,7 +112,7 @@ public class MemoryDataStore
             FieldOfStudyId = 1
         });
 
-        // coursefields: ارتباط دروس با رشته تحصیلی
+
         CourseFields.AddRange(new List<CourseField>
         {
             new CourseField

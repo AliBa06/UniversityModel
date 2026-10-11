@@ -13,7 +13,7 @@ public class RoleRequestService
     public RoleRequest CreateRequest(int userId, int roleId)
     {
 
-        var alreadyHasRole = _dataStore.UserRoles                     //to check if this user has already got this role or not
+        var alreadyHasRole = _dataStore.UserRoles 
             .Any(x =>
                 x.UserId == userId &&
                 x.RoleId == roleId);
@@ -25,7 +25,7 @@ public class RoleRequestService
         }
 
 
-        var hasPendingRequest = _dataStore.RoleRequests                           //to check if this user has already got a pending request
+        var hasPendingRequest = _dataStore.RoleRequests   
             .Any(x =>
                 x.UserId == userId &&
                 x.Status == "Pending");
@@ -37,7 +37,7 @@ public class RoleRequestService
         }
 
 
-        var request = new RoleRequest                                     //to create new request
+        var request = new RoleRequest    
         {
             RoleRequestId = _dataStore.RoleRequests.Count + 1,
             UserId = userId,

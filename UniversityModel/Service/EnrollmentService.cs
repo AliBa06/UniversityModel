@@ -15,10 +15,10 @@ public class EnrollmentService
     public Enrollment? Enroll(int userId, int offeringId)
     {
      
-        var student = _dataStore.Students .FirstOrDefault(x => x.UserId == userId);   // پیدا کردن دانشجوی مربوط به کاربر واردشده
+        var student = _dataStore.Students .FirstOrDefault(x => x.UserId == userId);   
         if (student is null)
             return null;
-        var offering = _dataStore.CourseOfferings.FirstOrDefault(x =>x.CourseOfferingId == offeringId);  // پیدا کردن ارائه‌ی درس
+        var offering = _dataStore.CourseOfferings.FirstOrDefault(x =>x.CourseOfferingId == offeringId);  
         if (offering is null)
             return null;
 
@@ -28,21 +28,21 @@ public class EnrollmentService
             return null;
         }
 
-        if (offering.Status != "Open")  // بررسی وضعیت ارائه
+        if (offering.Status != "Open")  
             return null;
 
         
-        var alreadyEnrolled = _dataStore.Enrollments .Any(x =>x.StudentId == student.StudentId && x.OfferingId == offeringId);// جلوگیری از انتخاب دوباره‌ی همان ارائه
+        var alreadyEnrolled = _dataStore.Enrollments .Any(x =>x.StudentId == student.StudentId && x.OfferingId == offeringId);
 
         if (alreadyEnrolled)
             return null;
        
-        var enrolledCount = _dataStore.Enrollments.Count(x => x.OfferingId == offeringId); // بررسی ظرفیت
+        var enrolledCount = _dataStore.Enrollments.Count(x => x.OfferingId == offeringId); 
         if (enrolledCount >= offering.Capacity)
             return null;
 
    
-        var enrollment = new Enrollment     // ایجاد انتخاب واحد
+        var enrollment = new Enrollment    
         {
             EnrollmentId =
                 _dataStore.Enrollments.Count + 1,

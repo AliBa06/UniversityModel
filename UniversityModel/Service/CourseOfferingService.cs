@@ -24,32 +24,31 @@ public class CourseOfferingService
        
 
     {
-        // پیدا کردن استاد مربوط به حساب کاربری واردشده
+
         var professor = _dataStore.Professors
             .FirstOrDefault(x => x.UserId == userId);
 
         if (professor is null)
             return null;
 
-        // بررسی اینکه درس انتخاب‌شده وجود دارد
-        var course = _dataStore.Courses
+              var course = _dataStore.Courses
             .FirstOrDefault(x => x.CourseId == dto.CourseId);
 
         if (course is null)
             return null;
 
-        // بررسی وجود ترم
+
         var semester = _dataStore.Semesters
             .FirstOrDefault(x => x.SemesterId == dto.SemesterId);
 
         if (semester is null)
             return null;
 
-        // ظرفیت باید بیشتر از صفر باشد
+
         if (dto.Capacity <= 0)
             return null;
 
-        // ساخت ارائه‌ی جدید
+
         var offering = new CourseOffering
         {
             CourseOfferingId =
@@ -62,7 +61,7 @@ public class CourseOfferingService
             Status = "Open"
         };
 
-        // ذخیره در حافظه
+
         _dataStore.CourseOfferings.Add(offering);
 
         return offering;
@@ -102,13 +101,13 @@ public class CourseOfferingService
     public List<CourseOfferingListDto> GetAllForStudent(int userId)
     {
         
-        var student = _dataStore.Students.FirstOrDefault(x => x.UserId == userId);    // دانشجویی را پیدا کن که در memorydata وجود داشته باشد
+        var student = _dataStore.Students.FirstOrDefault(x => x.UserId == userId);   
 
         if (student is null)
             return new List<CourseOfferingListDto>();
 
 
-        return _dataStore.CourseOfferings     //دروسی را پیدا کن که مربوط به رشته تحصیلی فرد باشد
+        return _dataStore.CourseOfferings   
             .Where(offering => _dataStore.CourseFields.Any(courseField =>
                 courseField.CourseId == offering.CourseId &&
                 courseField.FieldOfStudyId == student.FieldOfStudyId))
