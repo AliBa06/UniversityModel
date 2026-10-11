@@ -1,6 +1,6 @@
 ﻿namespace UniversityModel.Domain.Entities
 {
-    public class FieldOfStudy
+    public class FieldOfStudy              // رشته تحصیلی مثل مهندسی کامپیوتر 
     {
         public FieldOfStudy() { }
         public int FieldOfStudyId { get; set; }

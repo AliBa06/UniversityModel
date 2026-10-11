@@ -98,4 +98,41 @@ public class CourseOfferingService
             })
             .ToList();
     }
+
+    public List<CourseOfferingListDto> GetAllForStudent(int userId)
+    {
+        
+        var student = _dataStore.Students.FirstOrDefault(x => x.UserId == userId);    // دانشجویی را پیدا کن که در memorydata وجود داشته باشد
+
+        if (student is null)
+            return new List<CourseOfferingListDto>();
+
+
+        return _dataStore.CourseOfferings     //دروسی را پیدا کن که مربوط به رشته تحصیلی فرد باشد
+            .Where(offering => _dataStore.CourseFields.Any(courseField =>
+                courseField.CourseId == offering.CourseId &&
+                courseField.FieldOfStudyId == student.FieldOfStudyId))
+            .Select(offering =>
+            {
+                var course = _dataStore.Courses
+                    .FirstOrDefault(x => x.CourseId == offering.CourseId);
+
+                var professor = _dataStore.Professors
+                    .FirstOrDefault(x => x.ProfessorId == offering.ProfessorId);
+
+                return new CourseOfferingListDto
+                {
+                    CourseOfferingId = offering.CourseOfferingId,
+                    CourseName = course?.CourseName ?? "نام درس مشخص نیست",
+                    ProfessorFullName = professor is null
+                        ? "نام استاد مشخص نیست"
+                        : $"{professor.FirstName} {professor.LastName}",
+                    SemesterId = offering.SemesterId,
+                    Capacity = offering.Capacity,
+                    Status = offering.Status
+                };
+            })
+            .ToList();
+    }
+
 }

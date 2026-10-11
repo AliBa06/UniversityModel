@@ -21,7 +21,13 @@ public class EnrollmentService
         var offering = _dataStore.CourseOfferings.FirstOrDefault(x =>x.CourseOfferingId == offeringId);  // پیدا کردن ارائه‌ی درس
         if (offering is null)
             return null;
-      
+
+        var courseBelongsToStudentField = _dataStore.CourseFields.Any(x =>x.CourseId == offering.CourseId && x.FieldOfStudyId == student.FieldOfStudyId);
+        if (!courseBelongsToStudentField)
+        {
+            return null;
+        }
+
         if (offering.Status != "Open")  // بررسی وضعیت ارائه
             return null;
 

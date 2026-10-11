@@ -1,6 +1,6 @@
 ﻿namespace UniversityModel.Domain.Entities
 {
-    public class CourseField
+    public class CourseField            // ارتباط میان رشته تحصیلی و دروس مانند طراحی پایگاه داده 
     {
         public int CourseId { get; set; }
 

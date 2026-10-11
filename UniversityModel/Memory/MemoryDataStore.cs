@@ -1,4 +1,5 @@
-﻿using UniversityModel.Domain.Entities;
+﻿
+using UniversityModel.Domain.Entities;
 
 namespace UniversityModel.Memory;
 
@@ -16,45 +17,28 @@ public class MemoryDataStore
     public List<Professor> Professors { get; } = new();
     public List<Semester> Semesters { get; } = new();
 
+    public List<FieldOfStudy> FieldsOfStudy { get; } = new();
+    public List<CourseField> CourseFields { get; } = new();
+
     public MemoryDataStore()
     {
-        Roles.Add(new Role
+        // Roles
+        Roles.AddRange(new List<Role>
         {
-            RoleId = 1,
-            RoleName = "Admin"
+            new Role { RoleId = 1, RoleName = "Admin" },
+            new Role { RoleId = 2, RoleName = "Student" },
+            new Role { RoleId = 3, RoleName = "Professor" },
+            new Role { RoleId = 4, RoleName = "SuperAdmin" }
         });
 
-        Roles.Add(new Role
+        // User roles
+        UserRoles.AddRange(new List<UserRole>
         {
-            RoleId = 2,
-            RoleName = "Student"
+            new UserRole { UserId = 1, RoleId = 1 },
+            new UserRole { UserId = 1, RoleId = 4 }
         });
 
-        Roles.Add(new Role
-        {
-            RoleId = 3,
-            RoleName = "Professor"
-        });
-
-        Roles.Add(new Role
-        {
-            RoleId = 4,
-            RoleName = "SuperAdmin"
-        });
-
-        UserRoles.Add(new UserRole
-        {
-            UserId = 1,
-            RoleId = 1
-        });
-
-        UserRoles.Add(new UserRole
-        {
-            UserId = 1,
-            RoleId = 4
-        });
-
-        // Add courses
+        // Courses
         Courses.AddRange(new List<Course>
         {
             new Course
@@ -78,11 +62,15 @@ public class MemoryDataStore
                 CourseName = "سیستم‌های عامل"
             }
         });
+
+        // Semester
         Semesters.Add(new Semester
         {
             SemesterId = 4051,
             SemesterName = "ترم اول 1405"
         });
+
+        // Professor
         Professors.Add(new Professor
         {
             ProfessorId = 1,
@@ -90,14 +78,69 @@ public class MemoryDataStore
             FirstName = "reza",
             LastName = "basiri"
         });
+
+        // Fields of study
+        FieldsOfStudy.AddRange(new List<FieldOfStudy>
+        {
+            new FieldOfStudy
+            {
+                FieldOfStudyId = 1,
+                FieldName = "مهندسی کامپیوتر",
+                DegreeName = "کارشناسی"
+            },
+            new FieldOfStudy
+            {
+                FieldOfStudyId = 2,
+                FieldName = "مهندسی برق",
+                DegreeName = "کارشناسی"
+            },
+            new FieldOfStudy
+            {
+                FieldOfStudyId = 3,
+                FieldName = "مهندسی عمران",
+                DegreeName = "کارشناسی"
+            }
+        });
+
+        // Student
         Students.Add(new Student
         {
             StudentId = 1,
             UserId = 3,
             Age = 20,
             PersonalId = 1001,
-            FirstName = "sajad",
-            LastName = "basiri"
+            FirstName = "mehdi",
+            LastName = "basiri",
+            FieldOfStudyId = 1
+        });
+
+        // coursefields: ارتباط دروس با رشته تحصیلی
+        CourseFields.AddRange(new List<CourseField>
+        {
+            new CourseField
+            {
+                CourseId = 1,
+                FieldOfStudyId = 1,
+                IsRequired = true
+            },
+            new CourseField
+            {
+                CourseId = 2,
+                FieldOfStudyId = 1,
+                IsRequired = true
+            },
+            new CourseField
+            {
+                CourseId = 3,
+                FieldOfStudyId = 1,
+                IsRequired = true
+            },
+            new CourseField
+            {
+                CourseId = 4,
+                FieldOfStudyId = 1,
+                IsRequired = true
+            }
         });
     }
 }
