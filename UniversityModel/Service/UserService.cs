@@ -17,10 +17,12 @@ public class UserService
 
     private readonly MemoryDataStore _dataStore;
     private readonly IConfiguration _configuration;          //4.3 adding a new field 
-    public UserService(MemoryDataStore dataStore , IConfiguration configuration)   //4.4 giving Iconfiguration to Userservice
+    private readonly ILogger _logger;
+    public UserService(MemoryDataStore dataStore , IConfiguration configuration , ILogger logger)   //4.4 giving Iconfiguration to Userservice
     {
         _dataStore = dataStore;
         _configuration = configuration;
+        _logger = logger;
     }
 
     public List<User> GetAll()
@@ -29,8 +31,16 @@ public class UserService
     }
     public User? GetById(int id)
     {
+        _logger.LogInformation("searching for user with ID {Userid}",id);
+        var user = _dataStore.Users.FirstOrDefault(x => x.UserId == id);
+        if (user == null) {
+            _logger.LogWarning("User with Id {UserId} was not found", id);
+                return null;
+        }
+        _logger.LogInformation("User with Id {UserId} was not found ", id);
         return _dataStore.Users
             .FirstOrDefault(x => x.UserId == id);
+
     }
     private List<string> GetUserRoles(int userId)
     {

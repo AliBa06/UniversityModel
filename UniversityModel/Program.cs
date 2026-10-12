@@ -34,6 +34,7 @@ builder.Services.AddSingleton<MemoryDataStore>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<RoleRequestService>();
 
+
 builder.Services.AddDbContext<UniversityDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")
