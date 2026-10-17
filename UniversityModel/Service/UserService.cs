@@ -37,7 +37,7 @@ public class UserService
             _logger.LogWarning("User with Id {UserId} was not found", id);
                 return null;
         }
-        _logger.LogInformation("User with Id {UserId} was not found ", id);
+        _logger.LogInformation("User with Id {UserId} was found ", id);
         return _dataStore.Users
             .FirstOrDefault(x => x.UserId == id);
 
