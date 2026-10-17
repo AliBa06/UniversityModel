@@ -4,12 +4,14 @@ using Microsoft.IdentityModel.Tokens;
 using UniversityModel.Data;
 using UniversityModel.Memory;
 using Microsoft.OpenApi;
+using Serilog;
 using UniversityModel.Service;
 using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<EnrollmentService>();
 builder.Services.AddScoped<CourseOfferingService>();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSerilog((services, loggerConfiguration) =>loggerConfiguration.ReadFrom.Configuration(builder.Configuration));
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

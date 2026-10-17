@@ -15,7 +15,7 @@ public class RoleRequestController : ControllerBase
     {
         _roleRequestService = roleRequestService;
     }
-
+    [HttpPut]
     public IActionResult CreateRequest(int roleId)
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);

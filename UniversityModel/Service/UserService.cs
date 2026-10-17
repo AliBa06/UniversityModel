@@ -18,7 +18,7 @@ public class UserService
     private readonly MemoryDataStore _dataStore;
     private readonly IConfiguration _configuration;          //4.3 adding a new field 
     private readonly ILogger _logger;
-    public UserService(MemoryDataStore dataStore , IConfiguration configuration , ILogger logger)   //4.4 giving Iconfiguration to Userservice
+    public UserService(MemoryDataStore dataStore , IConfiguration configuration, ILogger<UserService> logger)   //4.4 giving Iconfiguration to Userservice
     {
         _dataStore = dataStore;
         _configuration = configuration;
