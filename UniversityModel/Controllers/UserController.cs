@@ -41,7 +41,7 @@ public class UserController : ControllerBase
                                                                                          // POST: api/User
     [HttpPost]
     [AllowAnonymous]
-    public IActionResult Create(UserDto user)
+    public IActionResult Create(UserRequestDto user)
     {
 
         _userService.Create(user);                                                       //add user in userservice

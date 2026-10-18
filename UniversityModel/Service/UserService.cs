@@ -1,15 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using UniversityModel.Domain.Entities;
-using UniversityModel.Dtos;
-using UniversityModel.Memory;
-using UniversityModel.Data;
 using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
-using System.Runtime.Intrinsics.Arm;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.Intrinsics.Arm;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+using UniversityModel.Data;
+using UniversityModel.Domain.Entities;
+using UniversityModel.Dtos;
+using UniversityModel.DTOs;
+using UniversityModel.Memory;
 namespace UniversityModel.Service;
 
 public class UserService
@@ -25,9 +26,17 @@ public class UserService
         _logger = logger;
     }
 
-    public List<User> GetAll()
+    public List<UserResponse> GetAll()
     {
-        return _dataStore.Users;
+        return _dataStore.Users
+            .Select(user => new UserResponse
+            {
+                UserId = user.UserId,
+                UserName = user.UserName,
+                FirstName = user.FirstName,
+                LastName = user.LastName
+            })
+            .ToList();
     }
     public User? GetById(int id)
     {
@@ -97,9 +106,9 @@ public class UserService
                     role));
         }
 
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(
-                _configuration["Jwt:Key"]!));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes( _configuration["Jwt:Key"]!));
+       
+               
 
         var credentials = new SigningCredentials(
             key,
@@ -141,7 +150,7 @@ public class UserService
 
         return Convert.ToHexString(hash);
     }
-    public void Create(UserDto user)
+    public void Create(UserRequestDto user)
     {
 
 
