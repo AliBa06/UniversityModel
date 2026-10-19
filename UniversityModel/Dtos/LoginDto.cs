@@ -1,5 +1,4 @@
 ﻿namespace UniversityModel.Dtos;
-
 public class LoginDto
 {
     public required string UserName { get; set; }

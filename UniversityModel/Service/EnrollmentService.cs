@@ -14,7 +14,6 @@ public class EnrollmentService
 
     public Enrollment? Enroll(int userId, int offeringId)
     {
-     
         var student = _dataStore.Students .FirstOrDefault(x => x.UserId == userId);   
         if (student is null)
             return null;

@@ -1,5 +1,4 @@
 ﻿namespace UniversityModel.Dtos;
-
 public class CreateCourseOfferingDto
 {
     public int CourseId { get; set; }

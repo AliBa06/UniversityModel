@@ -39,7 +39,7 @@ public class UserService
             .ToList();
     }
     public User? GetById(int id)
-    {
+    {   
         _logger.LogInformation("searching for user with ID {Userid}",id);
         var user = _dataStore.Users.FirstOrDefault(x => x.UserId == id);
         if (user == null) {
@@ -49,7 +49,7 @@ public class UserService
         _logger.LogInformation("User with Id {UserId} was found ", id);
         return _dataStore.Users
             .FirstOrDefault(x => x.UserId == id);
-
+            
     }
     private List<string> GetUserRoles(int userId)
     {
@@ -107,9 +107,6 @@ public class UserService
         }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes( _configuration["Jwt:Key"]!));
-       
-               
-
         var credentials = new SigningCredentials(
             key,
             SecurityAlgorithms.HmacSha256);
@@ -126,7 +123,6 @@ public class UserService
         return new JwtSecurityTokenHandler()
             .WriteToken(token);
     }
-
     private bool VerifyPassword( string password, string salt,string storedHash)   // 2.1 new method password verifying
     {
         var hash = HashPassword(password, salt);
@@ -152,8 +148,6 @@ public class UserService
     }
     public void Create(UserRequestDto user)
     {
-
-
         var newUser = new User
         {
             UserId = _dataStore.Users.Count + 1,
@@ -178,10 +172,6 @@ public class UserService
         {
             throw new Exception("password does not match");
         }
-
-
-
-
         var salt = GenerateSalt(); //using the Generatesalt method 1.3
 
         var passwordHash = HashPassword(user.Password, salt);      // calling the hashpassword method and putting salt and password as inputs (password + salt)
@@ -191,8 +181,6 @@ public class UserService
 
         _dataStore.Users.Add(newUser);
     }
-    
-
     public bool Delete(int id)
     {
         var user = GetById(id);
@@ -205,4 +193,3 @@ public class UserService
         return true;
     }
 }
-   

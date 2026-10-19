@@ -9,7 +9,5 @@
         public DateTime EndDate { get; private  set; }
         public int AcademicYear { get; set; }
         public ICollection<CourseOffering> CourseOfferings { get; set; } = new List<CourseOffering>();
-
-
     }
 }

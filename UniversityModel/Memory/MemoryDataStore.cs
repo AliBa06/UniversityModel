@@ -27,15 +27,13 @@ public class MemoryDataStore
             new Role { RoleId = 2, RoleName = "Student" },
             new Role { RoleId = 3, RoleName = "Professor" },
             new Role { RoleId = 4, RoleName = "SuperAdmin" }
-        });
-               
+        });       
         // User roles
         UserRoles.AddRange(new List<UserRole>
         {
             new UserRole { UserId = 1, RoleId = 1 },
             new UserRole { UserId = 1, RoleId = 4 }
         });
-
         // Courses
         Courses.AddRange(new List<Course>
         {
@@ -60,14 +58,12 @@ public class MemoryDataStore
                 CourseName = "سیستم‌های عامل"
             }
         });
-
         // Semester
         Semesters.Add(new Semester
         {
             SemesterId = 4051,
             SemesterName = "ترم اول 1405"
         });
-
         // Professor
         Professors.Add(new Professor
         {
@@ -76,7 +72,6 @@ public class MemoryDataStore
             FirstName = "reza",
             LastName = "basiri"
         });
-
         // Fields of study
         FieldsOfStudy.AddRange(new List<FieldOfStudy>
         {
@@ -99,7 +94,6 @@ public class MemoryDataStore
                 DegreeName = "کارشناسی"
             }
         });
-
         // Student
         Students.Add(new Student
         {
@@ -111,8 +105,6 @@ public class MemoryDataStore
             LastName = "basiri",
             FieldOfStudyId = 1
         });
-
-
         CourseFields.AddRange(new List<CourseField>
         {
             new CourseField

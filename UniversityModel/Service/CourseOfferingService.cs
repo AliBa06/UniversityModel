@@ -5,7 +5,6 @@ namespace UniversityModel.Service;
 public class CourseOfferingService
 {
     private readonly MemoryDataStore _dataStore;
-
     public CourseOfferingService(MemoryDataStore dataStore)
     {
         _dataStore = dataStore;
@@ -21,34 +20,21 @@ public class CourseOfferingService
             .ToList();
     }
     public CourseOffering? Create( CreateCourseOfferingDto dto, int userId)   //NEW METHOD
-       
-
     {
-
         var professor = _dataStore.Professors
             .FirstOrDefault(x => x.UserId == userId);
-
         if (professor is null)
             return null;
-
               var course = _dataStore.Courses
             .FirstOrDefault(x => x.CourseId == dto.CourseId);
-
         if (course is null)
             return null;
-
-
         var semester = _dataStore.Semesters
             .FirstOrDefault(x => x.SemesterId == dto.SemesterId);
-
         if (semester is null)
             return null;
-
-
         if (dto.Capacity <= 0)
             return null;
-
-
         var offering = new CourseOffering
         {
             CourseOfferingId =
@@ -60,10 +46,7 @@ public class CourseOfferingService
             Capacity = dto.Capacity,
             Status = "Open"
         };
-
-
         _dataStore.CourseOfferings.Add(offering);
-
         return offering;
     }
     public List<CourseOfferingListDto> GetAll()
@@ -97,15 +80,11 @@ public class CourseOfferingService
             })
             .ToList();
     }
-
     public List<CourseOfferingListDto> GetAllForStudent(int userId)
-    {
-        
+    {   
         var student = _dataStore.Students.FirstOrDefault(x => x.UserId == userId);   
-
         if (student is null)
             return new List<CourseOfferingListDto>();
-
 
         return _dataStore.CourseOfferings   
             .Where(offering => _dataStore.CourseFields.Any(courseField =>

@@ -3,14 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using UniversityModel.Service;
 namespace UniversityModel.Controllers;
-
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
 public class RoleRequestController : ControllerBase
 {
     private readonly RoleRequestService _roleRequestService;
-
     public RoleRequestController(RoleRequestService roleRequestService)
     {
         _roleRequestService = roleRequestService;
@@ -22,16 +20,10 @@ public class RoleRequestController : ControllerBase
 
         if (userIdClaim is null)
             return Unauthorized();
-
         var userId = int.Parse(userIdClaim.Value);
-
-        var request = _roleRequestService.CreateRequest(
-            userId,
-            roleId);
-
+        var request = _roleRequestService.CreateRequest(userId,roleId);
         if (request is null)
             return BadRequest("This role cannot be requested.");
-
         return Ok(request);
     }
     [HttpPut("{id}/approve")]
@@ -39,10 +31,8 @@ public class RoleRequestController : ControllerBase
     public IActionResult Approve(int id)
     {
         var request = _roleRequestService.ApproveRequest(id);
-
         if (request is null)
             return NotFound();
-
         return Ok(request);
     }
     [Authorize(Roles = "Admin")]
