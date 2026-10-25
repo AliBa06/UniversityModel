@@ -1,15 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using UniversityModel.Domain.Entities;
-using UniversityModel.Dtos;
-using UniversityModel.Memory;
-using UniversityModel.Data;
 using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
-using System.Runtime.Intrinsics.Arm;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.Intrinsics.Arm;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+using UniversityModel.Data;
+using UniversityModel.Domain.Entities;
+using UniversityModel.Dtos;
+using UniversityModel.DTOs;
+using UniversityModel.Memory;
 namespace UniversityModel.Service;
 
 public class UserService
@@ -17,20 +18,38 @@ public class UserService
 
     private readonly MemoryDataStore _dataStore;
     private readonly IConfiguration _configuration;          //4.3 adding a new field 
-    public UserService(MemoryDataStore dataStore , IConfiguration configuration)   //4.4 giving Iconfiguration to Userservice
+    private readonly ILogger _logger;
+    public UserService(MemoryDataStore dataStore , IConfiguration configuration, ILogger<UserService> logger)   //4.4 giving Iconfiguration to Userservice
     {
         _dataStore = dataStore;
         _configuration = configuration;
+        _logger = logger;
     }
 
-    public List<User> GetAll()
-    {
-        return _dataStore.Users;
-    }
-    public User? GetById(int id)
+    public List<UserResponse> GetAll()
     {
         return _dataStore.Users
+            .Select(user => new UserResponse
+            {
+                UserId = user.UserId,
+                UserName = user.UserName,
+                FirstName = user.FirstName,
+                LastName = user.LastName
+            })
+            .ToList();
+    }
+    public User? GetById(int id)
+    {   
+        _logger.LogInformation("searching for user with ID {Userid}",id);
+        var user = _dataStore.Users.FirstOrDefault(x => x.UserId == id);
+        if (user == null) {
+            _logger.LogWarning("User with Id {UserId} was not found", id);
+                return null;
+        }
+        _logger.LogInformation("User with Id {UserId} was found ", id);
+        return _dataStore.Users
             .FirstOrDefault(x => x.UserId == id);
+            
     }
     private List<string> GetUserRoles(int userId)
     {
@@ -87,10 +106,7 @@ public class UserService
                     role));
         }
 
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(
-                _configuration["Jwt:Key"]!));
-
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes( _configuration["Jwt:Key"]!));
         var credentials = new SigningCredentials(
             key,
             SecurityAlgorithms.HmacSha256);
@@ -107,7 +123,6 @@ public class UserService
         return new JwtSecurityTokenHandler()
             .WriteToken(token);
     }
-
     private bool VerifyPassword( string password, string salt,string storedHash)   // 2.1 new method password verifying
     {
         var hash = HashPassword(password, salt);
@@ -131,10 +146,8 @@ public class UserService
 
         return Convert.ToHexString(hash);
     }
-    public void Create(UserDto user)
+    public void Create(UserRequestDto user)
     {
-
-
         var newUser = new User
         {
             UserId = _dataStore.Users.Count + 1,
@@ -159,10 +172,6 @@ public class UserService
         {
             throw new Exception("password does not match");
         }
-
-
-
-
         var salt = GenerateSalt(); //using the Generatesalt method 1.3
 
         var passwordHash = HashPassword(user.Password, salt);      // calling the hashpassword method and putting salt and password as inputs (password + salt)
@@ -172,8 +181,6 @@ public class UserService
 
         _dataStore.Users.Add(newUser);
     }
-    
-
     public bool Delete(int id)
     {
         var user = GetById(id);
@@ -186,4 +193,3 @@ public class UserService
         return true;
     }
 }
-   

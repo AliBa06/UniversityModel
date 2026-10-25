@@ -11,44 +11,33 @@ using System.Security.Claims;
 public class UserController : ControllerBase
 {
     private readonly UserService _userService;
-
     public UserController(UserService userService)
     {
         _userService = userService;
     }
-
-
     [HttpGet]                                                                  // GET: api/User
     public IActionResult GetAll()
     {
         var users = _userService.GetAll();
-
         return Ok(users);
     }
-
-    
     [HttpGet("{id}")]                                                             // GET: api/User/5
     public IActionResult GetById(int id)
     {
         var user = _userService.GetById(id);
-
         if (user is null)
             return NotFound();
 
         return Ok(user);
-    }
-
-                                                                                         // POST: api/User
+    }                                                                                       // POST: api/User
     [HttpPost]
     [AllowAnonymous]
-    public IActionResult Create(UserDto user)
+    public IActionResult Create(UserRequestDto user)
     {
-
         _userService.Create(user);                                                       //add user in userservice
 
         return Ok(user);
     }
-
     [HttpDelete("{id}")]                                                                        // DELETE: api/User/5
     [Authorize(Roles = "Admin")]                                                                                                
     public IActionResult Delete(int id)
@@ -68,10 +57,6 @@ public class UserController : ControllerBase
         var result = _userService.Login(
             loginDto.UserName,
             loginDto.Password);
-
-        
-          
-
         return Ok (result);
     }
 }

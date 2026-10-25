@@ -8,6 +8,8 @@
         public int PersonalId { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
+        public int FieldOfStudyId { get; set; }
+        public FieldOfStudy FieldOfStudy { get; set; } = null!;
         public int UserId { get; set; }
         public User User { get; set; } = null!;
         public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();

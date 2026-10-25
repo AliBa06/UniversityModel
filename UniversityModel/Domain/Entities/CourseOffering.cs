@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Formatters;
-
+﻿
 namespace UniversityModel.Domain.Entities
 {
     public class CourseOffering
